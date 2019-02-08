@@ -1,0 +1,4 @@
+/venv
+/yummy/__pycache_
+/yummy/.idea/*
+/yummy/*.out
