@@ -1,8 +1,9 @@
 from dataclasses import dataclass
-from abc import abstractmethod
+from abc import abstractmethod, ABCMeta
+
 
 @dataclass
-class BaseCollection:
+class BaseCollection(ABCMeta):
 
     @abstractmethod
     def __iter__(self):
@@ -24,4 +25,3 @@ class BaseCollection:
     def __add__(self, other):
         pass
 
-    @

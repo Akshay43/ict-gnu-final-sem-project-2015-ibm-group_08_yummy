@@ -1,15 +1,5 @@
 from dataclasses import dataclass
-
-
-@dataclass
-class RestaurantBranch:
-    pass
-
-
-@dataclass
-class RestaurantCollection:
-    """Collections of Restaurants"""
-    pass
+from .restaurant_branch import RestaurantBranch
 
 
 @dataclass
