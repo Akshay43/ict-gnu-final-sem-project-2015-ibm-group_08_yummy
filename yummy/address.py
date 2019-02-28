@@ -6,10 +6,12 @@ class Address:
         self.landmark = landmark
         self.near_locality = near_locality
 
-
     def repr(self):
         return f"landmark: {self.landmark}, area: {self.area}, city: {self.city}," \
             f"country: {self.country}"
 
     def str(self):
+        return self.__dict__
+
+    def to_dict(self):
         return self.__dict__

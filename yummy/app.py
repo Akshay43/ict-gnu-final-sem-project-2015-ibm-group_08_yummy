@@ -46,7 +46,9 @@ with app.app_context():
 
 api.add_resource(User, '/user/<string:user_name>')
 api.add_resource(Users, '/users')
-api.add_resource(Restaurant, '/restaurant/<string:restaurant_name>')
+api.add_resource(Restaurant, '/<string:restaurant_name>',
+                 '/<string:restaurant_name>/<string:area>', endpoint='restaurant')
+# api.add_resource(Restaurant, )
 api.add_resource(Restaurants, '/restaurants')
 api.add_resource(Booking, '/user/<string:user_name>/booking/<string:booking_id>',
                                 '/restaurant/<string:restaurant_name>/booking/<string:booking_id>')
