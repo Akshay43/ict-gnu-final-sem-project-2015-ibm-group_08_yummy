@@ -16,7 +16,6 @@ def init_db():
     g.db = firestore.Client.from_service_account_json(credentials)
 
 
-
 def get_db():
     if 'db' not in g:
         # print('error')
@@ -35,6 +34,7 @@ def init_db_command():
     """Clear the existing data and create new tables."""
     init_db()
     click.echo('Initialized the database.')
+
 
 def init_app(app):
     app.teardown_appcontext(close_db)
