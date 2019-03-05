@@ -15,3 +15,7 @@ class Address:
 
     def to_dict(self):
         return self.__dict__
+
+    @classmethod
+    def from_dict(cls, address):
+        return cls(**address)

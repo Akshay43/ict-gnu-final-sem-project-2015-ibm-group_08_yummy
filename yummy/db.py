@@ -1,5 +1,5 @@
 from google.cloud import firestore
-from .user_exception import DBNotInitialized, CredentialsNotFound
+from .user_exception import CredentialsNotFound
 import os
 from flask import g
 import click
@@ -18,8 +18,6 @@ def init_db():
 
 def get_db():
     if 'db' not in g:
-        # print('error')
-        # raise DBNotInitialized
         init_db()
     return g.db
 

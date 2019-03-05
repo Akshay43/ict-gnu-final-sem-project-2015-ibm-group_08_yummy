@@ -2,7 +2,6 @@
 
 from flask_restful import Resource, reqparse, request
 from .address import Address
-from .location import Location
 from .timing import Timing
 from . import db
 from google.cloud.firestore_v1beta1._helpers import GeoPoint
@@ -10,6 +9,7 @@ from google.cloud.firestore_v1beta1._helpers import GeoPoint
 parser = reqparse.RequestParser()
 parser.add_argument('task')
 
+# todo: change below constant with file name
 restaurants_ref = db.get_db().collection(u'restaurants') or None
 
 
@@ -18,19 +18,27 @@ class Restaurant(Resource):
     def get(self, restaurant_name, area=None):
         res = None
         if restaurants_ref:
-            res = restaurants_ref.where(u'name', u'==', restaurant_name.lower()).get()
-            try:
+            if area:
+                res = restaurants_ref.document(restaurant_name)\
+                    .collection('branch')\
+                    .document(area)\
+                    .get()
                 res = next(res)
-                branchs = [branch.to_dict() for branch in res.reference.collection(u'branch').get()]
-                for branch in branchs:
-                    branch['location'] = {'lat': branch['location'].latitude, 'lon': branch['location'].longitude}
-                res = res.to_dict()
-                res['branch'] = branchs
-                return res.to_dict()
-            except StopIteration:
-                res = None
+            else:
+                pass
+            # res = restaurants_ref.where(u'name', u'==', restaurant_name.lower()).get()
+            # try:
+            #     # res = next(res)
+            #     branchs = [branch.to_dict() for branch in res.reference.collection(u'branch').get()]
+            #     for branch in branchs:
+            #         branch['location'] = {'lat': branch['location'].latitude, 'lon': branch['location'].longitude}
+            #     res = res.to_dict()
+            #     res['branch'] = branchs
+            #     return res.to_dict()
+            # except StopIteration:
+            #     res = None
 
-        return True
+        return res
 
     def post(self, restaurant_name, area):
 
@@ -38,14 +46,6 @@ class Restaurant(Resource):
         # arguments = restaurant_argument_parser(arguments)
 
         if restaurants_ref:
-            # res = restaurants_ref.document(restaurant_name.lower()).collection('branch').document(area).get()
-            # res = restaurants_ref.where(u'name', u'==', restaurant_name.lower()).get()
-            # res = next(res)
-            # res = res.reference.collection('branch').where('address.area', '==', area).get()
-            # res = next(res)
-            # res = restaurants_ref.document(restaurant_name.lower()).collection('branch').document(area).get()
-            # time = res.update(arguments)
-
             res = restaurants_ref.document(restaurant_name).set({
                 'name': restaurant_name,
                 'rating': 0.0,
@@ -68,7 +68,6 @@ class Restaurant(Resource):
                         "open": 10
                     },
                 }, merge=True)
-            print(res)
 
         return True
 
@@ -153,7 +152,7 @@ class RestaurantBranch:
         args = {}
         for key, value in restaurant.items():
             try:
-                args[key] = RestaurantBranch._req[key](**value)
+                args[key] = RestaurantBranch._fields[key](**value)
             except TypeError:
                 pass
 

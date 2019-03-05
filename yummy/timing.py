@@ -8,3 +8,7 @@ class Timing:
     def __str__(self):
         """ TODO: update str"""
         return self.__dict__
+
+    @classmethod
+    def from_dict(cls, timing):
+        return cls(**timing)
