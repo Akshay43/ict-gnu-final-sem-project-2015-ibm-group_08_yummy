@@ -5,7 +5,7 @@ from .address import Address
 from .timing import Timing
 from . import db
 from google.cloud.firestore_v1beta1._helpers import GeoPoint
-
+from ._util import geopoint_from_dict
 parser = reqparse.RequestParser()
 parser.add_argument('task')
 
@@ -25,18 +25,13 @@ class Restaurant(Resource):
                     .get()
                 res = next(res)
             else:
-                pass
-            # res = restaurants_ref.where(u'name', u'==', restaurant_name.lower()).get()
-            # try:
-            #     # res = next(res)
-            #     branchs = [branch.to_dict() for branch in res.reference.collection(u'branch').get()]
-            #     for branch in branchs:
-            #         branch['location'] = {'lat': branch['location'].latitude, 'lon': branch['location'].longitude}
-            #     res = res.to_dict()
-            #     res['branch'] = branchs
-            #     return res.to_dict()
-            # except StopIteration:
-            #     res = None
+                res = restaurants_ref.document(restaurant_name)\
+                    .collection('branch').get()
+
+                res = {
+                        'restaurant': restaurant_name,
+                        'branch': [{'name': restaurant.id} for restaurant in res]
+                }
 
         return res
 
@@ -115,8 +110,7 @@ def add_restaurant_argument_parser(args):
     for key, value in args.items():
         _fields[key](value)
 
-def GeoPoint_from_dict(geopoint):
-    return GeoPoint(**geopoint)
+
 
 class RestaurantDetails:
 
@@ -131,11 +125,12 @@ class RestaurantDetails:
     def from_dict(cls, restaurant):
         return cls(**restaurant)
 
+
 class RestaurantBranch:
 
     _fields = {
         'address': Address.from_dict,
-        'location': GeoPoint_from_dict,
+        'location': geopoint_from_dict,
         'timing': Timing.from_dict,
     }
 

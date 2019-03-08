@@ -1,3 +1,8 @@
+from google.cloud.firestore_v1beta1._helpers import GeoPoint
+from google.api_core.datetime_helpers import DatetimeWithNanoseconds
+from datetime import datetime
+
+
 def parse_args_for_update(args):
     assert isinstance(args, dict)
 
@@ -33,3 +38,15 @@ def registered_usernames():
     def username_exsist(username):
         init_username_service()
         return bool(username in g.users)
+
+
+def geopoint_from_dict(geopoint):
+    return GeoPoint(**geopoint)
+
+
+def convert_to_date_from_dict(date):
+    return DatetimeWithNanoseconds(**date)
+
+
+def get_current_date():
+    return DatetimeWithNanoseconds.from_rfc3339(datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ'))

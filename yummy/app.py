@@ -27,12 +27,6 @@ def create_app(test_config=None):
 
     from . import db
     db.init_app(app)
-
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-
     return app
 
 
@@ -46,10 +40,12 @@ with app.app_context():
 
 api.add_resource(User, '/user/<string:user_name>')
 api.add_resource(Users, '/users')
-api.add_resource(Restaurant, '/<string:restaurant_name>',
-                 '/<string:restaurant_name>/<string:area>', endpoint='restaurant')
+api.add_resource(Restaurant, '/restaurant/<string:restaurant_name>',
+                 '/restaurant/<string:restaurant_name>/<string:area>', )
 api.add_resource(Restaurants, '/restaurants')
-api.add_resource(UserBooking, '/user/<string:user_name>/booking/<string:booking_id>')
+
+
+api.add_resource(UserBooking, '/user/<string:user_name>/booking',) # '/user/<string:user_name>/booking/<string:booking_id>')
 api.add_resource(RestaurantBooking,
                  '/restaurant/<string:restaurant_name>/booking/<string:booking_id>')
 
